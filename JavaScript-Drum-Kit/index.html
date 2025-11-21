@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>JS Drum Kit</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="https://fav.farm/🔥" />
+  </head>
+  <body>
+    <div class="keys">
+      <div data-key="65" class="key">
+        <kbd>A</kbd>
+        <span class="sound">clap</span>
+      </div>
+      <div data-key="83" class="key">
+        <kbd>S</kbd>
+        <span class="sound">hihat</span>
+      </div>
+      <div data-key="68" class="key">
+        <kbd>D</kbd>
+        <span class="sound">kick</span>
+      </div>
+      <div data-key="70" class="key">
+        <kbd>F</kbd>
+        <span class="sound">openhat</span>
+      </div>
+      <div data-key="71" class="key">
+        <kbd>G</kbd>
+        <span class="sound">boom</span>
+      </div>
+      <div data-key="72" class="key">
+        <kbd>H</kbd>
+        <span class="sound">ride</span>
+      </div>
+      <div data-key="74" class="key">
+        <kbd>J</kbd>
+        <span class="sound">snare</span>
+      </div>
+      <div data-key="75" class="key">
+        <kbd>K</kbd>
+        <span class="sound">tom</span>
+      </div>
+      <div data-key="76" class="key">
+        <kbd>L</kbd>
+        <span class="sound">tink</span>
+      </div>
+    </div>
+
+    <audio data-key="65" src="sounds/clap.wav"></audio>
+    <audio data-key="83" src="sounds/hihat.wav"></audio>
+    <audio data-key="68" src="sounds/kick.wav"></audio>
+    <audio data-key="70" src="sounds/openhat.wav"></audio>
+    <audio data-key="71" src="sounds/boom.wav"></audio>
+    <audio data-key="72" src="sounds/ride.wav"></audio>
+    <audio data-key="74" src="sounds/snare.wav"></audio>
+    <audio data-key="75" src="sounds/tom.wav"></audio>
+    <audio data-key="76" src="sounds/tink.wav"></audio>
+
+    <script>
+      /* 
+      alright so the plan is to make the buttons play sound when pressed and work with animations from css
+      For that we need two functions:
+        1. first we gotta make a function that plays the sound when the key is pressed and applies the playing class
+        2. then a function to handle animation removal after the sound is played  
+      
+      */
+
+      // function to play sound
+      function playSound(e) {
+        const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
+        const key = document.querySelector(`div[data-key="${e.keyCode}"]`);
+        if (!audio) return; //stop the function from running all together
+        key.classList.add("playing");
+        audio.currentTime = 0; // Rewind
+        audio.play(); // Start
+      }
+
+      // function to remove transition
+      function removeTransition(e) {
+        console.log("--- Transition End Event Fired ---");
+        console.log(e);
+        if (e.propertyName !== "transform") return; //this checks if only the tranform property is done transitioning, if it is then we remove the class if not we exit the function
+        e.target.classList.remove("playing");
+      }
+
+      //event listeners
+      window.addEventListener("keydown", playSound); 
+      const keys = Array.from(document.querySelectorAll(".key")); 
+
+      keys.forEach(
+        (key) => key.addEventListener("transitionend", removeTransition) // the transition ends event well listens for when the transition ends duhh
+        
+      );
+    </script>
+  </body>
+</html>
